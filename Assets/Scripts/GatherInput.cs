@@ -4,7 +4,9 @@ using UnityEngine.InputSystem;
 public class GatherInput : MonoBehaviour
 {
     private Controls controls;
-    private float valueX;
+    private float _valueX;
+
+    public float ValueX { get => _valueX;  } // para usar esta variable publica
 
     private void Awake()
     {
@@ -20,12 +22,12 @@ public class GatherInput : MonoBehaviour
 
     private void StartMove(InputAction.CallbackContext context) // cuando presiono la tecla
     {
-        valueX = context.ReadValue<float>(); // leo los valores en  X
+        _valueX = context.ReadValue<float>(); // leo los valores en  X
     }
 
     private void StopMove(InputAction.CallbackContext context)
     {
-        valueX = 0; // cuando no se mueve el valor es 0 en x
+        _valueX = 0; // cuando no se mueve el valor es 0 en x
     }
 
     private void OnDisable()
