@@ -4,25 +4,42 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+
+    //COMPONENTS
     private Rigidbody2D m_rigidbody2D;
     private GatherInput m_gatherinput;
     private Transform m_transform;
+    private Animator m_animator;
+
+    //VALUES
     [SerializeField] private float speed;
     private int direction = 1;
+    private int idSpeed;
 
     void Start()
     {
         m_gatherinput = GetComponent<GatherInput>();
         m_transform = GetComponent<Transform>();
         m_rigidbody2D = GetComponent<Rigidbody2D>();
-
+        m_animator = GetComponent<Animator>();
+        idSpeed = Animator.StringToHash("Speed"); // convertir el el string de speed en numero asi no consume tanto ya que si no tiene q entrar el trigger y leer uno por uno las letras.
     }
 
+    private void Update()
+    {
+        SetAnimatorValues();
+        
+    }
+
+    private void SetAnimatorValues()
+    {
+        m_animator.SetFloat(idSpeed, Mathf.Abs(m_rigidbody2D.linearVelocityX));       //Mathf.abs te devuele un numero siempre positivo
+    }
 
     void FixedUpdate()
     {
         Move();
-    }
+    }   
 
     private void Move()
     {
