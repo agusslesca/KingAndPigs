@@ -5,26 +5,27 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
 
-    //COMPONENTS
+    //PLAYER COMPONENTS
     private Rigidbody2D m_rigidbody2D;                  //Prefijar nombres con m_(hace el codigo mas facil de lerr y distinguir entre campos y variables locales
     private GatherInput m_gatherinput;                  // LLamar a GetComponent una solo vez al inicio del start y guardar la referencia es una gran practica de rendimiento
     private Transform m_transform;                      //GetComponent es costoso, y encima guardar todos los componentes necesarios dentro del start para tu obj este completamente preparado para funcionar evita repetir esa busqueda innecesariamente
     private Animator m_animator;
 
-    //VALUES
+    [Header("Move and Jump settings")]
     [SerializeField] private float speed;
     private int direction = 1;
-    private int idSpeed;
-    private int idIsGrounded;
     [SerializeField] private float jumpForce;
-    [SerializeField] private int extrajumps;
+    [SerializeField] private int extraJumps;
     [SerializeField] private int counterxtrajumps;
+    private int idSpeed;
 
-    [SerializeField] private Transform lFoot, rFoot;
+    [Header("Ground settings")]
+    [SerializeField] private Transform lFoot;
+    [SerializeField] private Transform rFoot;
     [SerializeField] private bool isGrounded;                        
     [SerializeField] private float rayLengnth;
     [SerializeField] private LayerMask groundLayer;
-
+    private int idIsGrounded;
     void Start()
     {
         m_gatherinput = GetComponent<GatherInput>();
@@ -35,7 +36,7 @@ public class PlayerController : MonoBehaviour
         idIsGrounded = Animator.StringToHash("isGrounded");
         lFoot = GameObject.Find("LFoot").GetComponent<Transform>();
         rFoot = GameObject.Find("RFoot").GetComponent<Transform>();
-        counterxtrajumps = extrajumps;
+        counterxtrajumps = extraJumps;
     }
 
     private void Update()
@@ -97,7 +98,7 @@ public class PlayerController : MonoBehaviour
         if (lFootRay || rFootRay )
         {
             isGrounded = true;
-            counterxtrajumps = extrajumps; // se recargan los saltos cuando toca el ground
+            counterxtrajumps = extraJumps; // se recargan los saltos cuando toca el ground
         }
         else
         {
