@@ -15,7 +15,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float speed;
     private int direction = 1;
     private int idSpeed;
+    private int idIsGrounded;
     [SerializeField] private float jumpForce;
+    [SerializeField] private int extrajumps;
+    [SerializeField] private int counterxtrajumps;
+
+    [SerializeField] private Transform lFoot, rFoot;
+    [SerializeField] private bool isGrounded;                        
+    [SerializeField] private float rayLengnth;
+    [SerializeField] private LayerMask groundLayer;
 
     void Start()
     {
@@ -24,6 +32,10 @@ public class PlayerController : MonoBehaviour
         m_rigidbody2D = GetComponent<Rigidbody2D>();
         m_animator = GetComponent<Animator>();
         idSpeed = Animator.StringToHash("Speed"); // convertir el el string de speed en numero asi no consume tanto ya que si no tiene q entrar el trigger y leer uno por uno las letras.
+        idIsGrounded = Animator.StringToHash("isGrounded");
+        lFoot = GameObject.Find("LFoot").GetComponent<Transform>();
+        rFoot = GameObject.Find("RFoot").GetComponent<Transform>();
+        counterxtrajumps = extrajumps;
     }
 
     private void Update()
@@ -35,13 +47,15 @@ public class PlayerController : MonoBehaviour
     private void SetAnimatorValues()
     {
         m_animator.SetFloat(idSpeed, Mathf.Abs(m_rigidbody2D.linearVelocityX));       //Mathf.abs te devuele un numero siempre positivo
+        m_animator.SetBool(idIsGrounded, isGrounded);
     }
 
     void FixedUpdate()
     {
         Move();
         Jump();
-    }   
+        CheckGround();
+    }
 
 
     private void Move()
@@ -63,8 +77,31 @@ public class PlayerController : MonoBehaviour
     {
         if (m_gatherinput.IsJumping) // verifico si el jugador ha presionado el boton de salto
         {
+            if (isGrounded)
             m_rigidbody2D.linearVelocity = new Vector2(speed * m_gatherinput.ValueX, jumpForce); // defino la vel horizontal del personaje en el salto , y el jumpForce es lo que hace que se mueva en el eje Y (fuerza de salto
+            if (counterxtrajumps > 0)
+            {
+                m_rigidbody2D.linearVelocity = new Vector2(speed * m_gatherinput.ValueX, jumpForce);
+                counterxtrajumps--;
+
+            }
         }
         m_gatherinput.IsJumping = false; // despues de ejecutar el salto se reinicia la variable IsJumping a false para evitar que el personaje siga saltando continuamente
+    }
+
+    private void CheckGround()
+    {
+        RaycastHit2D lFootRay = Physics2D.Raycast(lFoot.position, Vector2.down,rayLengnth,groundLayer);
+        RaycastHit2D rFootRay = Physics2D.Raycast(rFoot.position, Vector2.down,rayLengnth,groundLayer);
+
+        if (lFootRay || rFootRay )
+        {
+            isGrounded = true;
+            counterxtrajumps = extrajumps; // se recargan los saltos cuando toca el ground
+        }
+        else
+        {
+            isGrounded = false;
+        }
     }
 }

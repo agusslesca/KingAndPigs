@@ -133,7 +133,7 @@ GameObject:
   - component: {fileID: 227685006}
   - component: {fileID: 227685005}
   - component: {fileID: 227685004}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2671,6 +2671,68 @@ TilemapCollider2D:
   m_MaximumTileChangeCount: 1000
   m_ExtrusionFactor: 0
   m_UseDelaunayMesh: 0
+--- !u!1 &316429281
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 316429282}
+  m_Layer: 6
+  m_Name: LFoot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &316429282
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 316429281}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.215, y: -0.457, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1257445637}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &385294294
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 385294295}
+  m_Layer: 6
+  m_Name: RFoot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &385294295
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 385294294}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.168, y: -0.457, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1257445637}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -2955,7 +3017,7 @@ GameObject:
   - component: {fileID: 1257445641}
   - component: {fileID: 1257445640}
   - component: {fileID: 1257445643}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3029,7 +3091,9 @@ Transform:
   m_LocalPosition: {x: 1.475, y: 0.465, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 316429282}
+  - {fileID: 385294295}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!70 &1257445638
@@ -3084,7 +3148,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 3
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -3109,6 +3173,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 4
+  jumpForce: 10
 --- !u!114 &1257445641
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3121,6 +3186,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6be6ebcdd98d80c41bfbee67f04ca9a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _isJumping: 0
 --- !u!114 &1257445642
 MonoBehaviour:
   m_ObjectHideFlags: 0
