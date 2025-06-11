@@ -144,10 +144,16 @@ public class PlayerController : MonoBehaviour
     {
         if(m_gatherinput.Value.x * direction < 0) // esta condicion verifica si el jugador esta intentando moverse en al dirrecion actual -1 izq, 1 der, 0 sin moverse
         {
-            m_transform.localScale = new Vector3(-m_transform.localScale.x,1,1); // efecto visual de voltear el personaje
-            direction *= -1;
+            HandleDirection();
         }
     }
+
+    private void HandleDirection()
+    {
+        m_transform.localScale = new Vector3(-m_transform.localScale.x, 1, 1); // efecto visual de voltear el personaje
+        direction *= -1;
+    }
+
     private void Jump() //!Anotacion : tengo q cambiar la gravedad desde el editor en rigibody2D para que el salto sea mas rapido o lo que yo necesite
     {
         if (m_gatherinput.IsJumping) // verifico si el jugador ha presionado el boton de salto
@@ -171,6 +177,7 @@ public class PlayerController : MonoBehaviour
     {
        
         m_rigidbody2D.linearVelocity = new Vector2(wallJumpForce.x * -direction, wallJumpForce.y); //el direction en negativo ya que como vamos a estar en una pared tiene q saltar en la direccion opuesta
+        HandleDirection();  
         StartCoroutine(WallJumpRoutine());
     }
 
