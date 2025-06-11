@@ -3464,6 +3464,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f08c90db28004840b31ab218bece2e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_transform: {fileID: 1257445637}
   speed: 4
   jumpForce: 10
   extraJumps: 1
@@ -3476,6 +3477,10 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 128
+  checklWallDistance: 0.4
+  isWallDetected: 0
+  canWallSlide: 0
+  slideSpeed: 0
 --- !u!114 &1257445641
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3488,6 +3493,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6be6ebcdd98d80c41bfbee67f04ca9a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _value: {x: 0, y: 0}
   _isJumping: 0
 --- !u!114 &1257445642
 MonoBehaviour:

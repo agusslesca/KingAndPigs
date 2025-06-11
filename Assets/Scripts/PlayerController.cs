@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour
     // ANIMATOR IDS
     private int idIsGrounded;
     private int idSpeed;
+    private int idIsWallDetected;
 
     [Header("Move settings")]
     [SerializeField] private float speed;
@@ -26,6 +27,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private int extraJumps;
     [SerializeField] private int counterxtrajumps;
     [SerializeField] private bool canDoubleJump; // si puedo hacer doble salto
+
 
 
     [Header("Ground Settings")]
@@ -40,6 +42,8 @@ public class PlayerController : MonoBehaviour
     [Header("Wall Settings")]
     [SerializeField] private float checklWallDistance;
     [SerializeField] private bool isWallDetected;
+    [SerializeField] private bool canWallSlide;
+    [SerializeField] private float slideSpeed;
 
     private void Awake()
     {
@@ -56,6 +60,8 @@ public class PlayerController : MonoBehaviour
        
         idSpeed = Animator.StringToHash("speed"); // convertir el el string de speed en numero asi no consume tanto ya que si no tiene q entrar el trigger y leer uno por uno las letras.
         idIsGrounded = Animator.StringToHash("isGrounded");
+        idIsWallDetected = Animator.StringToHash("isWallDetected");
+
         lFoot = GameObject.Find("LFoot").GetComponent<Transform>();
         rFoot = GameObject.Find("RFoot").GetComponent<Transform>();
         counterxtrajumps = extraJumps;
@@ -71,6 +77,7 @@ public class PlayerController : MonoBehaviour
     {
         m_animator.SetFloat(idSpeed, Mathf.Abs(m_rigidbody2D.linearVelocityX));       //Mathf.abs te devuele un numero siempre positivo
         m_animator.SetBool(idIsGrounded, isGrounded);
+        m_animator.SetBool(idIsWallDetected, isWallDetected); // animacion en la pared cuando la detecta.
     }
 
     void FixedUpdate()
@@ -84,6 +91,17 @@ public class PlayerController : MonoBehaviour
     {
         HandleGround();
         HandleWall();
+        HandleWallSlide();
+    }
+
+    private void HandleWallSlide()
+    {
+        canWallSlide = isWallDetected;
+        if (!canWallSlide) return; // si esta en la pared es falso, sale del metodo.
+        canDoubleJump = false; // es para cuando estoy pegado en la pared no tener el doble salto, por que se puede como "bugear"
+        slideSpeed = m_gatherinput.Value.y < 0 ? 1 : 0.5f; // si estoy presionando el valor sera 1, entonces la velocidad del jugador en la pared caera mucho mas rapido y si no presiono el valor caera en 0.5f y ira mas lento.
+        m_rigidbody2D.linearVelocity = new Vector2(m_rigidbody2D.linearVelocityX,m_rigidbody2D.linearVelocityY *  slideSpeed);
+
     }
 
     private void HandleWall()
