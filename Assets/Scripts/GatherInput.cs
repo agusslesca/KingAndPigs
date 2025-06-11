@@ -1,12 +1,12 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class GatherInput : MonoBehaviour
+public class GatherInput : MonoBehaviour           //SISTEMA ACTUALIZADO DE MOVIMIENTO PARA UN VECTOR2D ( UP , DOWN , LEFT , RIGHT)
 {
     private Controls controls;
-    private float _valueX;
+   [SerializeField] private Vector2 _value;
 
-    public float ValueX { get => _valueX; } // para usar esta variable publica
+    public Vector2 Value { get => _value; } // para usar esta variable publica
     
 
     [SerializeField] private bool _isJumping;
@@ -29,12 +29,12 @@ public class GatherInput : MonoBehaviour
 
     private void StartMove(InputAction.CallbackContext context) // cuando presiono la tecla
     {
-        _valueX = context.ReadValue<float>(); // leo los valores en  X
+        _value = context.ReadValue<Vector2>().normalized; // leo los valores en  X // el normalized va a siempre rendodiar para atras 1 o -1 dependiendo si es negativo
     }
 
     private void StopMove(InputAction.CallbackContext context)
     {
-        _valueX = 0; // cuando no se mueve el valor es 0 en x
+        _value = Vector2.zero; // cuando no se mueve el valor es 0 en x
     }
 
     public void StartJump (InputAction.CallbackContext context)

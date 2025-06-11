@@ -111,13 +111,13 @@ public class PlayerController : MonoBehaviour
     private void Move()
     {
         Flip(); //metodo para comprobar si estoy girado o no
-        m_rigidbody2D.linearVelocity = new Vector2(speed * m_gatherinput.ValueX, m_rigidbody2D.linearVelocityY);
+        m_rigidbody2D.linearVelocity = new Vector2(speed * m_gatherinput.Value.x, m_rigidbody2D.linearVelocityY);
 
     }
 
     private void Flip()
     {
-        if(m_gatherinput.ValueX * direction < 0) // esta condicion verifica si el jugador esta intentando moverse en al dirrecion actual -1 izq, 1 der, 0 sin moverse
+        if(m_gatherinput.Value.x * direction < 0) // esta condicion verifica si el jugador esta intentando moverse en al dirrecion actual -1 izq, 1 der, 0 sin moverse
         {
             m_transform.localScale = new Vector3(-m_transform.localScale.x,1,1); // efecto visual de voltear el personaje
             direction *= -1;
@@ -129,12 +129,12 @@ public class PlayerController : MonoBehaviour
         {
             if (isGrounded)
             {
-            m_rigidbody2D.linearVelocity = new Vector2(speed * m_gatherinput.ValueX, jumpForce); // defino la vel horizontal del personaje en el salto , y el jumpForce es lo que hace que se mueva en el eje Y (fuerza de salto
+            m_rigidbody2D.linearVelocity = new Vector2(speed * m_gatherinput.Value.x, jumpForce); // defino la vel horizontal del personaje en el salto , y el jumpForce es lo que hace que se mueva en el eje Y (fuerza de salto
                 canDoubleJump = true;
             }
             else if (counterxtrajumps > 0 && canDoubleJump)
             {
-                m_rigidbody2D.linearVelocity = new Vector2(speed * m_gatherinput.ValueX, jumpForce);
+                m_rigidbody2D.linearVelocity = new Vector2(speed * m_gatherinput.Value.x, jumpForce);
                 counterxtrajumps--;
 
             }
