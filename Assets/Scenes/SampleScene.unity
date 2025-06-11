@@ -195,7 +195,7 @@ MonoBehaviour:
     CustomLookAtTarget: 0
   Lens:
     FieldOfView: 34
-    OrthographicSize: 3
+    OrthographicSize: 3.06
     NearClipPlane: 0.3
     FarClipPlane: 1000
     Dutch: 0
@@ -3468,6 +3468,7 @@ MonoBehaviour:
   jumpForce: 10
   extraJumps: 1
   counterxtrajumps: 0
+  canDoubleJump: 0
   lFoot: {fileID: 0}
   rFoot: {fileID: 0}
   isGrounded: 0
