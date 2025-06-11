@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEditor.Tilemaps;
 using UnityEngine;
 
@@ -44,6 +45,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private bool isWallDetected;
     [SerializeField] private bool canWallSlide;
     [SerializeField] private float slideSpeed;
+    [SerializeField] private Vector2 wallJumpForce;
+    [SerializeField] private bool isWallJumping;
+    [SerializeField] private float wallJumpDuration; // variable para poder recuperar el movimiento cuando estamos agarrado en la pared y saltamos.
 
     private void Awake()
     {
@@ -94,21 +98,11 @@ public class PlayerController : MonoBehaviour
         HandleWallSlide();
     }
 
-    private void HandleWallSlide()
-    {
-        canWallSlide = isWallDetected;
-        if (!canWallSlide) return; // si esta en la pared es falso, sale del metodo.
-        canDoubleJump = false; // es para cuando estoy pegado en la pared no tener el doble salto, por que se puede como "bugear"
-        slideSpeed = m_gatherinput.Value.y < 0 ? 1 : 0.5f; // si estoy presionando el valor sera 1, entonces la velocidad del jugador en la pared caera mucho mas rapido y si no presiono el valor caera en 0.5f y ira mas lento.
-        m_rigidbody2D.linearVelocity = new Vector2(m_rigidbody2D.linearVelocityX,m_rigidbody2D.linearVelocityY *  slideSpeed);
-
-    }
 
     private void HandleWall()
     {
         isWallDetected = Physics2D.Raycast(m_transform.position, Vector2.right * direction, checklWallDistance, groundLayer); // detectar la pared
     }
-
     private void HandleGround()
     {
         lFootRay = Physics2D.Raycast(lFoot.position, Vector2.down, rayLenght, groundLayer);
@@ -125,9 +119,22 @@ public class PlayerController : MonoBehaviour
             isGrounded = false;
         }
     }
+    private void HandleWallSlide()
+    {
+        canWallSlide = isWallDetected;
+        if (!canWallSlide) return; // si esta en la pared es falso, sale del metodo.
+        canDoubleJump = false; // es para cuando estoy pegado en la pared no tener el doble salto, por que se puede como "bugear"
+        slideSpeed = m_gatherinput.Value.y < 0 ? 1 : 0.5f; // si estoy presionando el valor sera 1, entonces la velocidad del jugador en la pared caera mucho mas rapido y si no presiono el valor caera en 0.5f y ira mas lento.
+        m_rigidbody2D.linearVelocity = new Vector2(m_rigidbody2D.linearVelocityX,m_rigidbody2D.linearVelocityY *  slideSpeed);
+
+    }
+
 
     private void Move()
     {
+        if (isWallDetected && !isGrounded) return; // no sale del estado de agarrarse hasta que toque el piso
+        if (isWallJumping) return; // activar el movimiento
+
         Flip(); //metodo para comprobar si estoy girado o no
         m_rigidbody2D.linearVelocity = new Vector2(speed * m_gatherinput.Value.x, m_rigidbody2D.linearVelocityY);
 
@@ -147,17 +154,37 @@ public class PlayerController : MonoBehaviour
         {
             if (isGrounded)
             {
-            m_rigidbody2D.linearVelocity = new Vector2(speed * m_gatherinput.Value.x, jumpForce); // defino la vel horizontal del personaje en el salto , y el jumpForce es lo que hace que se mueva en el eje Y (fuerza de salto
+                m_rigidbody2D.linearVelocity = new Vector2(speed * m_gatherinput.Value.x, jumpForce); // defino la vel horizontal del personaje en el salto , y el jumpForce es lo que hace que se mueva en el eje Y (fuerza de salto
                 canDoubleJump = true;
             }
-            else if (counterxtrajumps > 0 && canDoubleJump)
-            {
-                m_rigidbody2D.linearVelocity = new Vector2(speed * m_gatherinput.Value.x, jumpForce);
-                counterxtrajumps--;
+            else if (isWallDetected) WallJump();
 
-            }
+            else if (counterxtrajumps > 0 && canDoubleJump) DoubleJump();
+            
+                
+            
         }
         m_gatherinput.IsJumping = false; // despues de ejecutar el salto se reinicia la variable IsJumping a false para evitar que el personaje siga saltando continuamente
+    }
+
+    private void WallJump()
+    {
+       
+        m_rigidbody2D.linearVelocity = new Vector2(wallJumpForce.x * -direction, wallJumpForce.y); //el direction en negativo ya que como vamos a estar en una pared tiene q saltar en la direccion opuesta
+        StartCoroutine(WallJumpRoutine());
+    }
+
+    IEnumerator WallJumpRoutine() //metodo CORRUTINA ( te permiten ejecutar codigo de forma asincrona, es decir, que se ejecute a lo largo del tiempo sin detener el juego)
+    {
+        isWallJumping = true;
+        yield return new WaitForSeconds(wallJumpDuration);        // Desactiva comportamiento dependiendo del tiempo que pase y lo vuelve activar para seguir usandolo dependiendo de que le pidas.
+        isWallJumping =false;
+    }
+
+    private void DoubleJump()
+    {
+        m_rigidbody2D.linearVelocity = new Vector2(speed * m_gatherinput.Value.x, jumpForce);
+        counterxtrajumps--;
     }
 
     private void OnDrawGizmos() // es un metodo que me permite dibujar y mostrar los Gizmos (ahora vamos a dibujar un rayo physicsraycast)
