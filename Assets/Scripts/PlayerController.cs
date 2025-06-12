@@ -17,6 +17,8 @@ public class PlayerController : MonoBehaviour
     private int idIsGrounded;
     private int idSpeed;
     private int idIsWallDetected;
+    private int idKnockback;
+
 
     [Header("Move settings")]
     [SerializeField] private float speed;
@@ -49,12 +51,20 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private bool isWallJumping;
     [SerializeField] private float wallJumpDuration; // variable para poder recuperar el movimiento cuando estamos agarrado en la pared y saltamos.
 
+    [Header("Knock settings")]
+    [SerializeField] private bool isKnocked;
+    [SerializeField] private bool canBeKnocked;
+    [SerializeField] private Vector2 knockedPower;
+    [SerializeField] private float knockedDuration;
+
+
     private void Awake()
     {
         m_gatherinput = GetComponent<GatherInput>();
        // m_transform = GetComponent<Transform>();
         m_rigidbody2D = GetComponent<Rigidbody2D>();
         m_animator = GetComponent<Animator>();
+        
     }
 
     //Componentes del player mismo se puede solicitar en el awake, pero componentes de otro
@@ -65,10 +75,13 @@ public class PlayerController : MonoBehaviour
         idSpeed = Animator.StringToHash("speed"); // convertir el el string de speed en numero asi no consume tanto ya que si no tiene q entrar el trigger y leer uno por uno las letras.
         idIsGrounded = Animator.StringToHash("isGrounded");
         idIsWallDetected = Animator.StringToHash("isWallDetected");
+        idKnockback = Animator.StringToHash("knockBack");
 
         lFoot = GameObject.Find("LFoot").GetComponent<Transform>();
         rFoot = GameObject.Find("RFoot").GetComponent<Transform>();
         counterxtrajumps = extraJumps;
+
+        
     }
 
     private void Update()
@@ -86,6 +99,7 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (isKnocked) return;
         CheckCollision();
         Move();
         Jump();
@@ -194,6 +208,22 @@ public class PlayerController : MonoBehaviour
         counterxtrajumps--;
     }
 
+    public void KnockBack()
+    {
+        
+        StartCoroutine(KnockBackRoutine());
+        m_rigidbody2D.linearVelocity = new Vector2(knockedPower.x * -direction, knockedPower.y); // fuerza hacia atras
+        m_animator.SetTrigger(idKnockback); // al ser trigger solamente le tengo que pasar el parametro, ningun parametro/estado de mas.
+    }
+
+    private IEnumerator KnockBackRoutine() // SECUENCIA DEL NOCKEADO.
+    {
+        isKnocked = true;
+        canBeKnocked = false; // no puedo ser nockeado nuevamente
+        yield return new WaitForSeconds(knockedDuration);
+        isKnocked=false;
+        canBeKnocked = true;
+    }
     private void OnDrawGizmos() // es un metodo que me permite dibujar y mostrar los Gizmos (ahora vamos a dibujar un rayo physicsraycast)
     {
         Gizmos.DrawLine(m_transform.position, new Vector2(m_transform.position.x + (checklWallDistance * direction), m_transform.position.y));
